@@ -128,7 +128,13 @@
                             <outlet property="delegate" destination="M3L-SF-GRi" id="a1N-B2-iBU"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="0jp-4t-fRn"/>
+                    <navigationItem key="navigationItem" id="0jp-4t-fRn">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="4DL-yg-xKX">
+                            <connections>
+                                <action selector="addGalleryRow:" destination="M3L-SF-GRi" id="GHN-f7-jnR"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <segue destination="659-DA-fAx" kind="showDetail" identifier="showDetail" id="C3p-Te-DL1"/>
                     </connections>
