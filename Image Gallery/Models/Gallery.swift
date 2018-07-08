@@ -10,9 +10,15 @@ import Foundation
 
 struct Gallery {
     var status = Status.active
+    var name: String
     
     enum Status {
         case active
         case deleted
+    }
+    
+    init(name: String) {
+        self.status = Status.active
+        self.name = name
     }
 }

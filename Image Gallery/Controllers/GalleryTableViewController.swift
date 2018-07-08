@@ -10,7 +10,10 @@ import UIKit
 
 class GalleryTableViewController: UITableViewController {
     
-    var data = ["One", "Two", "Three"]
+    var galleries: [Gallery] = []
+    var deletedGalleries: [Gallery] {
+        return galleries.filter {$0.status == Gallery.Status.deleted}
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,10 +23,14 @@ class GalleryTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        galleries.append(Gallery.init(name: "One"))
+        galleries.append(Gallery.init(name: "Two"))
+        galleries.append(Gallery.init(name: "Three"))
     }
     
     @IBAction func addGalleryRow(_ sender: UIBarButtonItem) {
-        data.append("Four")
+        galleries.append(Gallery.init(name: "New Gallery"))
         tableView.reloadData()
     }
     
@@ -35,14 +42,14 @@ class GalleryTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return data.count
+        return galleries.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Simple Cell", for: indexPath)
 
         // Configure the cell...
-        cell.textLabel?.text = data[indexPath.row]
+        cell.textLabel?.text = galleries[indexPath.row].name
 
         return cell
     }
@@ -59,7 +66,7 @@ class GalleryTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            data.remove(at: indexPath.row)
+            galleries.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
