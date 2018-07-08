@@ -89,14 +89,19 @@ class GalleryTableViewController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+        if segue.identifier == "Show Collection" {
+            if let vc = segue.destination as? ImageCollectionViewController,
+                let cell = sender as? UITableViewCell,
+                let indexPath = tableView.indexPath(for: cell) {
+                vc.gallery = galleries[indexPath.row]
+            }
+        }
     }
-    */
 
 }

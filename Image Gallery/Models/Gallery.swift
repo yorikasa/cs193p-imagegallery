@@ -8,9 +8,10 @@
 
 import Foundation
 
-struct Gallery {
+class Gallery {
     var status = Status.active
     var name: String
+    var collection: [ImageItem]
     
     enum Status {
         case active
@@ -20,5 +21,6 @@ struct Gallery {
     init(name: String) {
         self.status = Status.active
         self.name = name
+        self.collection = []
     }
 }

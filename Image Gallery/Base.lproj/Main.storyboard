@@ -99,6 +99,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="6Gb-e5-7RE" kind="showDetail" identifier="Show Collection" id="9iQ-1E-4Xb"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -132,4 +135,7 @@
             <point key="canvasLocation" x="-653" y="-655"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="9iQ-1E-4Xb"/>
+    </inferredMetricsTieBreakers>
 </document>

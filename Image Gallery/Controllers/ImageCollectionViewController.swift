@@ -12,7 +12,16 @@ private let reuseIdentifier = "Image Cell"
 
 class ImageCollectionViewController: UICollectionViewController {
     
-    var collection: [ImageItem] = []
+    var collection: [ImageItem] = [] {
+        didSet {
+            gallery?.collection = collection
+        }
+    }
+    var gallery: Gallery? {
+        didSet {
+            collection = gallery!.collection
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
