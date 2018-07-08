@@ -25,9 +25,6 @@ class ImageCollectionViewController: UICollectionViewController {
         // self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
-        collection.append(ImageItem.init())
-        collection.append(ImageItem.init())
-        
         collectionView?.addInteraction(UIDropInteraction(delegate: self))
     }
 }
@@ -44,7 +41,7 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout {
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
         if let imageCell = cell as? ImageCollectionViewCell {
-            imageCell.imageView.image = UIImage.init(named: collection[indexPath.item].urlString)
+            // imageCell.imageView.image =
             return imageCell
         }
         return cell
@@ -74,16 +71,19 @@ extension ImageCollectionViewController: UIDropInteractionDelegate {
     }
     
     func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
+        collection.append(ImageItem.init())
+        let itemIndex = collection.count - 1
+        
         session.loadObjects(ofClass: UIImage.self) { (images) in
             if let image = images.first as? UIImage {
-                DispatchQueue.main.async {
-                    //
-                }
+                self.collection[itemIndex].imageSize = image.size
+                self.collectionView?.reloadData()
             }
         }
         session.loadObjects(ofClass: NSURL.self) { (urls) in
             if let url = urls.first as? URL {
-                print(url)
+                self.collection[itemIndex].url = url
+                self.collectionView?.reloadData()
             }
         }
     }

@@ -6,22 +6,35 @@
 //  Copyright © 2018 Yuki Orikasa. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct ImageItem {
-    let imageWidth: Int
-    let imageHeight: Int
-    var aspectRatio: Double {
-        return  Double(imageHeight) / Double(imageWidth)
+    var imageSize: CGSize
+    var aspectRatio: CGFloat {
+        return  imageSize.height / imageSize.width
     }
-    let url: URL
+    var url: URL
+    var createdAt: Date
     
-    // for testing
-    var urlString: String = "sampleImage"
+    init(size: CGSize, url: String) {
+        imageSize = size
+        self.url = URL.init(string: "string")!
+        createdAt = Date()
+    }
     
     init() {
-        imageHeight = 10
-        imageWidth = 10
-        url = URL.init(string: "http://google.com")!
+        imageSize = CGSize(width: 100, height: 100)
+        self.url = URL.init(string: "url")!
+        createdAt = Date()
+    }
+}
+
+extension ImageItem: Equatable {
+    static func == (lhs: ImageItem, rhs: ImageItem ) -> Bool {
+        if lhs.createdAt == rhs.createdAt {
+            return true
+        } else {
+            return false
+        }
     }
 }
