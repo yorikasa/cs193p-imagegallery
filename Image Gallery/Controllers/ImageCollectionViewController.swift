@@ -50,7 +50,12 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout {
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
         if let imageCell = cell as? ImageCollectionViewCell {
-            // imageCell.imageView.image =
+            DispatchQueue.global(qos: .userInitiated).async {
+                let fetchedImage = self.fetchImage(url: self.collection[indexPath.row].url)
+                DispatchQueue.main.async {
+                    imageCell.imageView.image = fetchedImage
+                }
+            }
             return imageCell
         }
         return cell
@@ -62,6 +67,15 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout {
         let cellWidth: CGFloat = 100
         let cellHeight: CGFloat = CGFloat(collection[indexPath.item].aspectRatio) * cellWidth
         return CGSize(width: cellWidth, height: cellHeight)
+    }
+    
+    private func fetchImage(url: URL) -> UIImage? {
+        let data = try? Data(contentsOf: url)
+        if let image = data {
+            return UIImage(data: image)
+        } else {
+            return nil
+        }
     }
     
 }
