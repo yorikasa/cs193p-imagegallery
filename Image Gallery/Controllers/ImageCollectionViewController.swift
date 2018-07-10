@@ -36,6 +36,19 @@ class ImageCollectionViewController: UICollectionViewController {
         // Do any additional setup after loading the view.
         collectionView?.addInteraction(UIDropInteraction(delegate: self))
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "Show Image Detail" {
+            if let vc = segue.destination as? ImageDetailViewController {
+                if let item = sender as? ImageCollectionViewCell {
+                    // vc.bigImage.image = item.imageView.image
+                    if let indexPath = collectionView?.indexPath(for: item) {
+                        vc.imageURL = collection[indexPath.item].url
+                    }
+                }
+            }
+        }
+    }
 }
 
 // MARK: - DataSource & Delegate & DelegateFlowLayout
