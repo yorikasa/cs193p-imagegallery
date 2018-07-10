@@ -40,27 +40,32 @@
                             <inset key="sectionInset" minX="8" minY="8" maxX="8" maxY="8"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Image Cell" id="jJ9-bp-tOi" customClass="ImageCollectionViewCell" customModule="Image_Gallery" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="Image Cell" id="jJ9-bp-tOi" customClass="ImageCollectionViewCell" customModule="Image_Gallery" customModuleProvider="target">
                                 <rect key="frame" x="8" y="8" width="100" height="100"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iEh-vo-uSt">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iEh-vo-uSt">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                         </imageView>
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Q35-wD-He7">
+                                            <rect key="frame" x="40" y="40" width="20" height="20"/>
+                                        </activityIndicatorView>
                                     </subviews>
                                 </view>
-                                <color key="backgroundColor" red="0.66422420739999999" green="0.66424006219999998" blue="0.66423153879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="iEh-vo-uSt" firstAttribute="leading" secondItem="jJ9-bp-tOi" secondAttribute="leading" id="9l3-RM-VXH"/>
+                                    <constraint firstItem="Q35-wD-He7" firstAttribute="centerY" secondItem="jJ9-bp-tOi" secondAttribute="centerY" id="JDf-FP-CPc"/>
                                     <constraint firstItem="iEh-vo-uSt" firstAttribute="top" secondItem="jJ9-bp-tOi" secondAttribute="top" id="Qut-wz-LVy"/>
                                     <constraint firstAttribute="trailing" secondItem="iEh-vo-uSt" secondAttribute="trailing" id="bf9-hr-hTr"/>
                                     <constraint firstAttribute="bottom" secondItem="iEh-vo-uSt" secondAttribute="bottom" id="hMS-Yg-e3a"/>
+                                    <constraint firstItem="Q35-wD-He7" firstAttribute="centerX" secondItem="jJ9-bp-tOi" secondAttribute="centerX" id="yKd-cq-1Jp"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="imageView" destination="iEh-vo-uSt" id="eK3-Y8-XN2"/>
+                                    <outlet property="loadIndicator" destination="Q35-wD-He7" id="q2R-LI-gTz"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>

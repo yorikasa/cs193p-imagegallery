@@ -50,10 +50,12 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout {
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
         if let imageCell = cell as? ImageCollectionViewCell {
+            imageCell.loadIndicator.startAnimating()
             DispatchQueue.global(qos: .userInitiated).async {
                 let fetchedImage = self.fetchImage(url: self.collection[indexPath.row].url)
                 DispatchQueue.main.async {
                     imageCell.imageView.image = fetchedImage
+                    imageCell.loadIndicator.stopAnimating()
                 }
             }
             return imageCell
