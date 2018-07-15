@@ -10,24 +10,31 @@ import UIKit
 
 class ImageDetailViewController: UIViewController {
 
-    @IBOutlet weak var bigImage: UIImageView!
     @IBOutlet weak var loadIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var scrollView: UIScrollView! {
+        didSet {
+            scrollView.delegate = self
+            scrollView.addSubview(imageView)
+        }
+    }
     
     var imageURL: URL? {
         didSet {
-            DispatchQueue.global(qos: .userInitiated).async {
-                let image = self.fetchImage(url: self.imageURL!)
-                DispatchQueue.main.async {
-                    self.bigImage.image = image
-                }
+            if imageView.image != nil {
+                imageView.image = nil
+                fetchImage(from: imageURL!)
             }
         }
     }
+    var imageView = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        if imageView.image == nil, imageURL != nil {
+            fetchImage(from: imageURL!)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -36,15 +43,28 @@ class ImageDetailViewController: UIViewController {
     }
     
     // copied from ImageColletionViewController...
-    private func fetchImage(url: URL) -> UIImage? {
-        let data = try? Data(contentsOf: url)
-        if let image = data {
-            return UIImage(data: image)
-        } else {
-            return nil
+    private func fetchImage(from url: URL) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            if let data = try? Data(contentsOf: url) {
+                let image = UIImage(data: data)
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                    self.imageView.sizeToFit()
+                    self.scrollView.contentSize = self.imageView.frame.size
+                    self.scrollView.zoomScale = self.zoomScaleToFit()
+                }
+            }
         }
     }
     
+    private func zoomScaleToFit() -> CGFloat {
+        let widthScale = self.scrollView.frame.width / self.imageView.frame.width
+        let heightScale = self.scrollView.frame.height / self.imageView.frame.height
+        let zoomScale = min(widthScale, heightScale) < 1 ? min(widthScale, heightScale) : 1
+        self.scrollView.minimumZoomScale = zoomScale
+        self.scrollView.maximumZoomScale = zoomScale*2
+        return zoomScale
+    }
 
     /*
     // MARK: - Navigation
@@ -56,4 +76,11 @@ class ImageDetailViewController: UIViewController {
     }
     */
 
+}
+
+
+extension ImageDetailViewController: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return self.imageView
+    }
 }

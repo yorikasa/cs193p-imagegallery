@@ -41,7 +41,6 @@ class ImageCollectionViewController: UICollectionViewController {
         if segue.identifier == "Show Image Detail" {
             if let vc = segue.destination as? ImageDetailViewController {
                 if let item = sender as? ImageCollectionViewCell {
-                    // vc.bigImage.image = item.imageView.image
                     if let indexPath = collectionView?.indexPath(for: item) {
                         vc.imageURL = collection[indexPath.item].url
                     }

@@ -90,13 +90,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="703.5" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZL1-nU-qF8">
-                                <rect key="frame" x="102" y="134" width="500" height="500"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="500" id="2p0-Od-vV9"/>
-                                    <constraint firstAttribute="width" constant="500" id="cMz-q1-2Oa"/>
-                                </constraints>
-                            </imageView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dvr-0C-Ewc">
+                                <rect key="frame" x="-0.5" y="64" width="704" height="704"/>
+                            </scrollView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="37c-HW-idb">
                                 <rect key="frame" x="334" y="366" width="37" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -105,19 +101,21 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="ZL1-nU-qF8" firstAttribute="centerY" secondItem="AIK-sL-8S0" secondAttribute="centerY" id="3Cg-Zh-uZO"/>
-                            <constraint firstItem="ZL1-nU-qF8" firstAttribute="centerX" secondItem="AIK-sL-8S0" secondAttribute="centerX" id="92e-eP-qRu"/>
+                            <constraint firstItem="Dvr-0C-Ewc" firstAttribute="leading" secondItem="MCF-Xn-PYX" secondAttribute="leading" id="RCJ-Br-IWf"/>
+                            <constraint firstItem="Dvr-0C-Ewc" firstAttribute="bottom" secondItem="MCF-Xn-PYX" secondAttribute="bottom" id="TXa-sC-Fxe"/>
+                            <constraint firstItem="Dvr-0C-Ewc" firstAttribute="top" secondItem="MCF-Xn-PYX" secondAttribute="top" id="Wjo-Bn-tbF"/>
+                            <constraint firstItem="MCF-Xn-PYX" firstAttribute="trailing" secondItem="Dvr-0C-Ewc" secondAttribute="trailing" id="vHu-ov-39Z"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="MCF-Xn-PYX"/>
                     </view>
                     <connections>
-                        <outlet property="bigImage" destination="ZL1-nU-qF8" id="oIJ-7h-h42"/>
                         <outlet property="loadIndicator" destination="37c-HW-idb" id="lNs-k5-a0T"/>
+                        <outlet property="scrollView" destination="Dvr-0C-Ewc" id="cQC-Ru-zgK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0qd-80-xgZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1058" y="140"/>
+            <point key="canvasLocation" x="1057.6171875" y="139.84375"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="m0d-JV-oem">
