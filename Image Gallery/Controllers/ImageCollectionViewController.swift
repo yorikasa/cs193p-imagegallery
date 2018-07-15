@@ -22,6 +22,8 @@ class ImageCollectionViewController: UICollectionViewController {
             collection = gallery!.collection
         }
     }
+    
+    var cellWidth: CGFloat = 100
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +37,7 @@ class ImageCollectionViewController: UICollectionViewController {
 
         // Do any additional setup after loading the view.
         collectionView?.addInteraction(UIDropInteraction(delegate: self))
+        registerGestures()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -78,7 +81,7 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth: CGFloat = 100
+        let cellWidth: CGFloat = self.cellWidth
         let cellHeight: CGFloat = CGFloat(collection[indexPath.item].aspectRatio) * cellWidth
         return CGSize(width: cellWidth, height: cellHeight)
     }
@@ -124,4 +127,23 @@ extension ImageCollectionViewController: UIDropInteractionDelegate {
             }
         }
     }
+}
+
+// MARK: - Add Pinch to Zoom Gestures
+extension ImageCollectionViewController {
+    
+    @objc private func changeCellWidth(_ sender: UIPinchGestureRecognizer) {
+        switch sender.state {
+        case .ended:
+            self.cellWidth = self.cellWidth * sender.scale
+            collectionView?.reloadData()
+        default:
+            break
+        }
+    }
+    private func registerGestures() {
+        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(changeCellWidth(_:)))
+        collectionView?.addGestureRecognizer(pinch)
+    }
+    
 }
