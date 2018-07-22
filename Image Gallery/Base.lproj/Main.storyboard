@@ -51,24 +51,35 @@
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iEh-vo-uSt">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                         </imageView>
-                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Q35-wD-He7">
-                                            <rect key="frame" x="40" y="40" width="20" height="20"/>
-                                        </activityIndicatorView>
                                     </subviews>
                                 </view>
                                 <constraints>
                                     <constraint firstItem="iEh-vo-uSt" firstAttribute="leading" secondItem="jJ9-bp-tOi" secondAttribute="leading" id="9l3-RM-VXH"/>
-                                    <constraint firstItem="Q35-wD-He7" firstAttribute="centerY" secondItem="jJ9-bp-tOi" secondAttribute="centerY" id="JDf-FP-CPc"/>
                                     <constraint firstItem="iEh-vo-uSt" firstAttribute="top" secondItem="jJ9-bp-tOi" secondAttribute="top" id="Qut-wz-LVy"/>
                                     <constraint firstAttribute="trailing" secondItem="iEh-vo-uSt" secondAttribute="trailing" id="bf9-hr-hTr"/>
                                     <constraint firstAttribute="bottom" secondItem="iEh-vo-uSt" secondAttribute="bottom" id="hMS-Yg-e3a"/>
-                                    <constraint firstItem="Q35-wD-He7" firstAttribute="centerX" secondItem="jJ9-bp-tOi" secondAttribute="centerX" id="yKd-cq-1Jp"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="imageView" destination="iEh-vo-uSt" id="eK3-Y8-XN2"/>
-                                    <outlet property="loadIndicator" destination="Q35-wD-He7" id="q2R-LI-gTz"/>
                                     <segue destination="PRs-qq-1YF" kind="show" identifier="Show Image Detail" id="A2k-1a-9XB"/>
                                 </connections>
+                            </collectionViewCell>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="Placeholder Cell" id="zbV-2q-QcW" customClass="ImageCollectionViewCell" customModule="Image_Gallery" customModuleProvider="target">
+                                <rect key="frame" x="125.5" y="8" width="100" height="100"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="ROK-ep-XVs">
+                                            <rect key="frame" x="-10" y="40" width="20" height="20"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="ROK-ep-XVs" firstAttribute="centerY" secondItem="zbV-2q-QcW" secondAttribute="centerY" id="NI9-VT-I1F"/>
+                                    <constraint firstItem="ROK-ep-XVs" firstAttribute="centerX" secondItem="zbV-2q-QcW" secondAttribute="centerX" id="lKE-0y-T2Z"/>
+                                </constraints>
                             </collectionViewCell>
                         </cells>
                         <connections>

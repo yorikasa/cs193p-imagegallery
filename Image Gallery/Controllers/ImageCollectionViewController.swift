@@ -36,7 +36,9 @@ class ImageCollectionViewController: UICollectionViewController {
         // self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
-        collectionView?.addInteraction(UIDropInteraction(delegate: self))
+        //collectionView?.addInteraction(UIDropInteraction(delegate: self))
+        collectionView?.dragDelegate = self
+        collectionView?.dropDelegate = self
         registerGestures()
     }
     
@@ -65,12 +67,10 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout {
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
         if let imageCell = cell as? ImageCollectionViewCell {
-            imageCell.loadIndicator.startAnimating()
             DispatchQueue.global(qos: .userInitiated).async {
                 let fetchedImage = self.fetchImage(url: self.collection[indexPath.row].url)
                 DispatchQueue.main.async {
                     imageCell.imageView.image = fetchedImage
-                    imageCell.loadIndicator.stopAnimating()
                 }
             }
             return imageCell
@@ -97,37 +97,128 @@ extension ImageCollectionViewController: UICollectionViewDelegateFlowLayout {
     
 }
 
-
-// MARK: - Drag & Drop Interaction (UIDropInteractionDelegate)
-extension ImageCollectionViewController: UIDropInteractionDelegate {
-    func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool {
-        return session.canLoadObjects(ofClass: NSURL.self) &&
-            session.canLoadObjects(ofClass: UIImage.self)
+// MARK: - UICollectionView Drag Delegate
+extension ImageCollectionViewController: UICollectionViewDragDelegate {
+    func collectionView(_ collectionView: UICollectionView,
+                        itemsForBeginning session: UIDragSession,
+                        at indexPath: IndexPath) -> [UIDragItem] {
+        session.localContext = "local dd!"
+        return dragItems(at: indexPath)
     }
     
-    func dropInteraction(_ interaction: UIDropInteraction,
-                         sessionDidUpdate session: UIDropSession) -> UIDropProposal {
-        return UIDropProposal(operation: .copy)
+    func collectionView(_ collectionView: UICollectionView, itemsForAddingTo session: UIDragSession, at indexPath: IndexPath, point: CGPoint) -> [UIDragItem] {
+        return dragItems(at: indexPath)
     }
     
-    func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
-        collection.append(ImageItem.init())
-        let itemIndex = collection.count - 1
-        
-        session.loadObjects(ofClass: UIImage.self) { (images) in
-            if let image = images.first as? UIImage {
-                self.collection[itemIndex].imageSize = image.size
-                self.collectionView?.reloadData()
-            }
-        }
-        session.loadObjects(ofClass: NSURL.self) { (urls) in
-            if let url = urls.first as? URL {
-                self.collection[itemIndex].url = url
-                self.collectionView?.reloadData()
-            }
-        }
+    private func dragItems(at indexPath: IndexPath) -> [UIDragItem] {
+        let imageItem = collection[indexPath.item]
+        let dragItem = imageItem.dragItem()
+        dragItem.localObject = imageItem
+        return [dragItem]
     }
 }
+
+// MARK: - UICollectionView Drop Delegate
+extension ImageCollectionViewController: UICollectionViewDropDelegate {
+    func collectionView(_ collectionView: UICollectionView, canHandle session: UIDropSession) -> Bool {
+        return session.canLoadObjects(ofClass: NSURL.self)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        dropSessionDidUpdate session: UIDropSession,
+                        withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+        let isLocal = (session.localDragSession?.localContext as? String) == "local dd!"
+        return UICollectionViewDropProposal(operation: isLocal ? .move : .copy,
+                                            intent: .insertAtDestinationIndexPath)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        performDropWith coordinator: UICollectionViewDropCoordinator) {
+        
+        let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(item: 0, section: 0)
+        for item in coordinator.items {
+            if coordinator.session.localDragSession != nil {
+                // this may be dangerous (force unwrap sourceIndexPath)
+                guard item.sourceIndexPath != nil else {return}
+                if let imageItem = item.dragItem.localObject as? ImageItem {
+                    // this may also dangerous
+                    // `index` of collecion always equals to `sourceIndexPath` of collectionView???
+                    // let index = self.collection.index(of: imageItem)
+                    
+                    // slow replacing images makes glitchy impression
+                    collectionView.performBatchUpdates({
+                        self.collection.remove(at: item.sourceIndexPath!.item)
+                        self.collection.insert(imageItem, at: destinationIndexPath.item)
+                        collectionView.moveItem(at: item.sourceIndexPath!, to: destinationIndexPath)
+                    })
+                }
+            } else {
+                // drop from outside
+                let newItem = ImageItem()
+                DispatchQueue.main.async {
+                    self.collection.insert(newItem, at: destinationIndexPath.item)
+                    collectionView.insertItems(at: [destinationIndexPath])
+                }
+                item.dragItem.itemProvider.loadObject(ofClass: NSURL.self) { (provider, error) in
+                    if let url = provider as? NSURL {
+                        newItem.url = url as URL
+                    }
+                    DispatchQueue.main.async {
+                        collectionView.reloadItems(at: [destinationIndexPath])
+                    }
+                }
+                item.dragItem.itemProvider.loadObject(ofClass: UIImage.self) { (provider, error) in
+                    if let image = provider as? UIImage {
+                        newItem.imageSize = image.size
+                    }
+                    DispatchQueue.main.async {
+                        collectionView.reloadItems(at: [destinationIndexPath])
+                    }
+                }
+            }
+        }
+    }
+    
+//    func collectionView(_ collectionView: UICollectionView,
+//                        performDropWith coordinator: UICollectionViewDropCoordinator) {
+//        let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(item: 0, section: 0)
+//        for item in coordinator.items {
+//            // Local Drag & Drop
+//            if let sourceIndexPath = item.sourceIndexPath {
+//                // TODO: Make sure my model (ImageItem) to conform NSItemProvider
+//                if let url = item.dragItem.localObject as? NSURL {
+//                    collectionView.performBatchUpdates({
+//                        let removed = collection.remove(at: sourceIndexPath.item)
+//                        collection.insert(removed, at: destinationIndexPath.item)
+//                        collectionView.deleteItems(at: [sourceIndexPath])
+//                        collectionView.insertItems(at: [destinationIndexPath])
+//                    })
+//                    coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
+//                }
+//            }
+//            // Drag & Drop from other applications
+//            else {
+//                let placeholder = UICollectionViewDropPlaceholder(insertionIndexPath: destinationIndexPath,
+//                                                                  reuseIdentifier: "Placeholder Cell")
+//
+//                let placeholderContext = coordinator.drop(item.dragItem,
+//                                                          to: placeholder)
+//                item.dragItem.itemProvider.loadObject(ofClass: NSURL.self) { (provider, error) in
+//                    DispatchQueue.main.async {
+//                        if let url = provider as? NSURL {
+//                            placeholderContext.commitInsertion(dataSourceUpdates: { (insertionIndexPath) in
+//                                //self.collection.insert(url, at: insertionIndexPath.item)
+//                            })
+//                        } else {
+//                            placeholderContext.deletePlaceholder()
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+}
+
 
 // MARK: - Add Pinch to Zoom Gestures
 extension ImageCollectionViewController {
