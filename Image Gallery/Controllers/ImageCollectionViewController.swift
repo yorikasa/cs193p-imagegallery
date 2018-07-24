@@ -186,45 +186,6 @@ extension ImageCollectionViewController: UICollectionViewDropDelegate {
             }
         }
     }
-    
-//    func collectionView(_ collectionView: UICollectionView,
-//                        performDropWith coordinator: UICollectionViewDropCoordinator) {
-//        let destinationIndexPath = coordinator.destinationIndexPath ?? IndexPath(item: 0, section: 0)
-//        for item in coordinator.items {
-//            // Local Drag & Drop
-//            if let sourceIndexPath = item.sourceIndexPath {
-//                // TODO: Make sure my model (ImageItem) to conform NSItemProvider
-//                if let url = item.dragItem.localObject as? NSURL {
-//                    collectionView.performBatchUpdates({
-//                        let removed = collection.remove(at: sourceIndexPath.item)
-//                        collection.insert(removed, at: destinationIndexPath.item)
-//                        collectionView.deleteItems(at: [sourceIndexPath])
-//                        collectionView.insertItems(at: [destinationIndexPath])
-//                    })
-//                    coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
-//                }
-//            }
-//            // Drag & Drop from other applications
-//            else {
-//                let placeholder = UICollectionViewDropPlaceholder(insertionIndexPath: destinationIndexPath,
-//                                                                  reuseIdentifier: "Placeholder Cell")
-//
-//                let placeholderContext = coordinator.drop(item.dragItem,
-//                                                          to: placeholder)
-//                item.dragItem.itemProvider.loadObject(ofClass: NSURL.self) { (provider, error) in
-//                    DispatchQueue.main.async {
-//                        if let url = provider as? NSURL {
-//                            placeholderContext.commitInsertion(dataSourceUpdates: { (insertionIndexPath) in
-//                                //self.collection.insert(url, at: insertionIndexPath.item)
-//                            })
-//                        } else {
-//                            placeholderContext.deletePlaceholder()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
 }
 
 
