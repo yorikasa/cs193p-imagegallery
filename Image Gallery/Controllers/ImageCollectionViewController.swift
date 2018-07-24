@@ -145,19 +145,27 @@ extension ImageCollectionViewController: UICollectionViewDropDelegate {
                     // `index` of collecion always equals to `sourceIndexPath` of collectionView???
                     // let index = self.collection.index(of: imageItem)
                     
-                    // slow replacing images makes glitchy impression
                     collectionView.performBatchUpdates({
                         self.collection.remove(at: item.sourceIndexPath!.item)
                         self.collection.insert(imageItem, at: destinationIndexPath.item)
-                        collectionView.moveItem(at: item.sourceIndexPath!, to: destinationIndexPath)
+                        //collectionView.moveItem(at: item.sourceIndexPath!, to: destinationIndexPath)
                     })
+                    // this animate drop! but slightly glitchy yet
+                    coordinator.drop(item.dragItem, toItemAt: destinationIndexPath)
                 }
             } else {
                 // drop from outside
+                // TODO: animate drop when cross-app drop
+                let placeholder = UICollectionViewDropPlaceholder(insertionIndexPath: destinationIndexPath,
+                                                                  reuseIdentifier: "Placeholder Cell")
+                let placeholderContext = coordinator.drop(item.dragItem, to: placeholder)
+                
                 let newItem = ImageItem()
                 DispatchQueue.main.async {
-                    self.collection.insert(newItem, at: destinationIndexPath.item)
-                    collectionView.insertItems(at: [destinationIndexPath])
+                    placeholderContext.commitInsertion(dataSourceUpdates: { (insertionIndexPath) in
+                        self.collection.insert(newItem, at: insertionIndexPath.item)
+                        //collectionView.insertItems(at: [insertionIndexPath])
+                    })
                 }
                 item.dragItem.itemProvider.loadObject(ofClass: NSURL.self) { (provider, error) in
                     if let url = provider as? NSURL {

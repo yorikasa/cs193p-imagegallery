@@ -71,11 +71,12 @@
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="ROK-ep-XVs">
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="ROK-ep-XVs">
                                             <rect key="frame" x="-10" y="40" width="20" height="20"/>
                                         </activityIndicatorView>
                                     </subviews>
                                 </view>
+                                <color key="backgroundColor" red="0.83741801979999997" green="0.83743780850000005" blue="0.83742713930000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="ROK-ep-XVs" firstAttribute="centerY" secondItem="zbV-2q-QcW" secondAttribute="centerY" id="NI9-VT-I1F"/>
                                     <constraint firstItem="ROK-ep-XVs" firstAttribute="centerX" secondItem="zbV-2q-QcW" secondAttribute="centerX" id="lKE-0y-T2Z"/>
