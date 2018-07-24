@@ -96,7 +96,7 @@ class GalleryTableViewController: UITableViewController {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
         if segue.identifier == "Show Collection" {
-            if let vc = segue.destination as? ImageCollectionViewController,
+            if let vc = (segue.destination as? UINavigationController)?.viewControllers.last as? ImageCollectionViewController,
                 let cell = sender as? UITableViewCell,
                 let indexPath = tableView.indexPath(for: cell) {
                 vc.gallery = galleries[indexPath.row]

@@ -40,6 +40,7 @@ class ImageCollectionViewController: UICollectionViewController {
         collectionView?.dragDelegate = self
         collectionView?.dropDelegate = self
         registerGestures()
+        self.navigationItem.title = gallery?.name
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
