@@ -144,7 +144,26 @@ class GalleryTableViewController: UITableViewController {
     }
 }
 
-// Add Gestures
+// MARK: Swipe Actions
+extension GalleryTableViewController {
+    override func tableView(_ tableView: UITableView,
+                   leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        if indexPath.section == 1 {
+            let putBack = UIContextualAction(style: .normal, title: "Put Back") { (action, view, handler) in
+                self.deletedGalleries[indexPath.row].status = Gallery.Status.active
+                tableView.reloadData()
+                handler(true)
+            }
+            putBack.backgroundColor = UIColor.orange
+            let configuration = UISwipeActionsConfiguration(actions: [putBack])
+            return configuration
+        }
+        return nil
+    }
+}
+
+
+// MARK: Add Gestures
 extension GalleryTableViewController {
     @objc private func renameGallery(_ sender: UITapGestureRecognizer) {
         switch sender.state {
