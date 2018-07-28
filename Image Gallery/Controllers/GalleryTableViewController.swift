@@ -14,6 +14,7 @@ class GalleryTableViewController: UITableViewController {
     var deletedGalleries: [Gallery] {
         return galleries.filter {$0.status == Gallery.Status.deleted}
     }
+    private var editingRowIndex: Int? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,8 @@ class GalleryTableViewController: UITableViewController {
         galleries.append(Gallery.init(name: "One"))
         galleries.append(Gallery.init(name: "Two"))
         galleries.append(Gallery.init(name: "Three"))
+        
+        registerGestures()
     }
     
     @IBAction func addGalleryRow(_ sender: UIBarButtonItem) {
@@ -46,21 +49,24 @@ class GalleryTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Simple Cell", for: indexPath)
-
-        // Configure the cell...
-        cell.textLabel?.text = galleries[indexPath.row].name
-
-        return cell
+        if editingRowIndex == indexPath.row {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Editable Cell",
+                                                     for: indexPath) as! EditableTableViewCell
+            cell.textField.text = galleries[indexPath.row].name
+            cell.resignationHandler = { [weak self, unowned cell] in
+                if let name = cell.textField.text {
+                    self?.galleries[indexPath.row].name = name
+                }
+                self?.editingRowIndex = nil
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+            }
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Simple Cell", for: indexPath)
+            cell.textLabel?.text = galleries[indexPath.row].name
+            return cell
+        }
     }
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
 
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -72,23 +78,15 @@ class GalleryTableViewController: UITableViewController {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
+    
+    override func tableView(_ tableView: UITableView,
+                            willDisplay cell: UITableViewCell,
+                            forRowAt indexPath: IndexPath) {
+        if let editingCell = cell as? EditableTableViewCell {
+            editingCell.textField.becomeFirstResponder()
+        }
+    }
  
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -102,6 +100,30 @@ class GalleryTableViewController: UITableViewController {
                 vc.gallery = galleries[indexPath.row]
             }
         }
+    }
+}
+
+// Add Gestures
+extension GalleryTableViewController {
+    @objc private func renameGallery(_ sender: UITapGestureRecognizer) {
+        switch sender.state {
+        case .ended:
+            let location = sender.location(in: sender.view)
+            
+            if let index = tableView.indexPathForRow(at: location){
+                //print(tappedTableView.cellForRow(at: index))
+                // tableView.reloadRows(at: [index], with: .automatic)
+                editingRowIndex = index.row
+                tableView.reloadData()
+            }
+        default:
+            break
+        }
+    }
+    private func registerGestures() {
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(renameGallery(_:)))
+        doubleTap.numberOfTapsRequired = 2
+        tableView?.addGestureRecognizer(doubleTap)
     }
 
 }
