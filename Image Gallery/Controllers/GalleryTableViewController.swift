@@ -14,6 +14,9 @@ class GalleryTableViewController: UITableViewController {
     var deletedGalleries: [Gallery] {
         return galleries.filter {$0.status == Gallery.Status.deleted}
     }
+    var activeGalleries: [Gallery] {
+        return galleries.filter {$0.status == Gallery.Status.active}
+    }
     private var editingRowIndex: Int? = nil
 
     override func viewDidLoad() {
@@ -40,40 +43,78 @@ class GalleryTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        if deletedGalleries.count > 0 {
+            return 2
+        } else {
+            return 1
+        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return galleries.count
+        if section == 0 {
+            return galleries.filter {$0.status == Gallery.Status.active}.count
+        } else {
+            return galleries.filter {$0.status == Gallery.Status.deleted}.count
+        }
     }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if editingRowIndex == indexPath.row {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Editable Cell",
-                                                     for: indexPath) as! EditableTableViewCell
-            cell.textField.text = galleries[indexPath.row].name
-            cell.resignationHandler = { [weak self, unowned cell] in
-                if let name = cell.textField.text {
-                    self?.galleries[indexPath.row].name = name
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return nil
+        case 1:
+            return "Recently Deleted"
+        default:
+            return nil
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView,
+                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            if editingRowIndex == indexPath.row {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Editable Cell",
+                                                         for: indexPath) as! EditableTableViewCell
+                cell.textField.text = activeGalleries[indexPath.row].name
+                cell.resignationHandler = { [weak self, unowned cell] in
+                    if let name = cell.textField.text {
+                        self?.activeGalleries[indexPath.row].name = name
+                    }
+                    self?.editingRowIndex = nil
+                    tableView.reloadRows(at: [indexPath], with: .automatic)
                 }
-                self?.editingRowIndex = nil
-                tableView.reloadRows(at: [indexPath], with: .automatic)
+                return cell
+            } else {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Simple Cell", for: indexPath)
+                cell.textLabel?.text = activeGalleries[indexPath.row].name
+                return cell
             }
-            return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Simple Cell", for: indexPath)
-            cell.textLabel?.text = galleries[indexPath.row].name
+            cell.textLabel?.text = deletedGalleries[indexPath.row].name
             return cell
         }
     }
 
     // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView,
+                            commit editingStyle: UITableViewCellEditingStyle,
+                            forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            galleries.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+
+            // TODO: can delete deleted row
+            // you should filter which row to delete by indexPath.section
+            if indexPath.section == 0 {
+                activeGalleries[indexPath.row].status = Gallery.Status.deleted
+            } else {
+                let aCell = deletedGalleries[indexPath.row]
+                if let index = galleries.index(of: aCell) {
+                    galleries.remove(at: index)
+                }
+            }
+            tableView.reloadData()
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
